@@ -399,7 +399,7 @@ with fundamentals_tab:
 ## PART 2 - DCF VALUATION
 ##
 
-# Professor requires a 3-year average FCF as the DCF starting point.
+# Uses a 3-year average FCF as the DCF starting point
 base_fcf = (
     free_cash_flow
     .dropna()
@@ -811,42 +811,29 @@ peer_tickers = [
 ## DOWNLOAD PEER DATA
 ##
 
-peer_data = []
-
-for peer in peer_tickers:
-
-    try:
-
-        peer_stock = yf.Ticker(peer)
-        peer_info = peer_stock.info
-
-        peer_data.append({
-            "Ticker": peer,
-            "P/E": peer_info.get(
-                "trailingPE",
-                np.nan
-            ),
-            "EV/EBITDA": peer_info.get(
-                "enterpriseToEbitda",
-                np.nan
-            ),
-            "P/S": peer_info.get(
-                "priceToSalesTrailing12Months",
-                np.nan
-            )
-        })
-
-    except Exception:
-
-        peer_data.append({
-            "Ticker": peer,
-            "P/E": np.nan,
-            "EV/EBITDA": np.nan,
-            "P/S": np.nan
-        })
+@st.cache_data(ttl=3600)
+def load_peer_data(peers):
+    rows = []
+    for peer in peers:
+        try:
+            peer_info = yf.Ticker(peer).info
+            rows.append({
+                "Ticker": peer,
+                "P/E": peer_info.get("trailingPE", np.nan),
+                "EV/EBITDA": peer_info.get("enterpriseToEbitda", np.nan),
+                "P/S": peer_info.get("priceToSalesTrailing12Months", np.nan)
+            })
+        except Exception:
+            rows.append({
+                "Ticker": peer,
+                "P/E": np.nan,
+                "EV/EBITDA": np.nan,
+                "P/S": np.nan
+            })
+    return pd.DataFrame(rows)
 
 
-peer_table = pd.DataFrame(peer_data)
+peer_table = load_peer_data(tuple(peer_tickers))
 
 
 ##
