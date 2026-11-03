@@ -2,6 +2,9 @@
 
 **Live app:** https://equity-valuation-dashboard-ck3zg4j9nr4xgzfr9bgxhs.streamlit.app/
 
+<img width="1432" height="812" alt="Football field valuation chart" src="https://github.com/user-attachments/assets/8154b264-e944-4796-9240-eb954014ac0a" />
+
+
 An interactive Streamlit dashboard that values a public company using a discounted cash flow (DCF) model, comparable-company analysis, and sensitivity testing. Enter any ticker to pull its financial statements and market data from Yahoo Finance.
 
 ## Features
